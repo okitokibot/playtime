@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>OkiToki — Playtime</title>
+<link rel="icon" type="image/png" href="https://i.postimg.cc/KcwZnMTP/okitoki.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fff3ea;
+    --surface: #ffffff;
+    --surface-2: #ffe6d4;
+    --line: #f6d9c4;
+    --text: #4a2f22;
+    --text-dim: #8a5f47;
+    --text-faint: #b1866a;
+    --good: #3fb37f;
+    --good-soft: #d8f3e6;
+    --warn: #e8973f;
+    --warn-soft: #fbe6cd;
+    --down: #e2604f;
+    --accent: #ff8a5c;
+    --gold: #e8b13f;
+    --silver: #9aa3ac;
+    --bronze: #c17a4a;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; touch-action: pan-x pan-y; }
+
+  html, body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  img {
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
+    pointer-events: none;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background:
+      radial-gradient(900px 480px at 12% -8%, #ffd9b880 0%, transparent 60%),
+      radial-gradient(800px 420px at 100% 4%, #ffc9a660 0%, transparent 55%),
+      var(--bg);
+    color: var(--text);
+    font-family: 'Nunito', system-ui, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text);
+  }
+  .brand img {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    box-shadow: 0 2px 6px rgba(226, 138, 92, 0.35);
+  }
+  .brand .dim { color: var(--text-dim); font-weight: 500; font-size: 0.95em; }
+
+  .hero {
+    padding: 56px 0 32px;
+    text-align: center;
+  }
+  .hero h1 {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    font-weight: 800;
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .hero p {
+    color: var(--text-dim);
+    font-size: 1rem;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+
+  .cache-note {
+    font-size: 0.78rem;
+    color: var(--text-faint);
+    margin-top: 10px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 2px 10px rgba(226, 138, 92, 0.10);
+  }
+
+  .leaderboard-panel { padding: 8px 6px; margin-bottom: 40px; flex: 1; }
+  .leaderboard-list { list-style: none; margin: 0; padding: 0; }
+  .leaderboard-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .leaderboard-row:last-child { border-bottom: none; }
+  .leaderboard-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+  .leaderboard-rank {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-faint);
+    width: 2em;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .leaderboard-rank.rank-1 { color: var(--gold); font-size: 1.3rem; }
+  .leaderboard-rank.rank-2 { color: var(--silver); font-size: 1.15rem; }
+  .leaderboard-rank.rank-3 { color: var(--bronze); font-size: 1.1rem; }
+  .leaderboard-username {
+    color: var(--text);
+    font-weight: 700;
+    font-size: 0.98rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .leaderboard-hours {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    background: var(--surface-2);
+    padding: 5px 12px;
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+  .leaderboard-row.rank-1 .leaderboard-hours { color: var(--gold); background: #fbeecb; }
+
+  .empty-state {
+    padding: 40px 18px;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+  }
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 26px 0 40px;
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    color: var(--text-faint);
+    font-family: 'JetBrains Mono', monospace;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <img src="okitoki.png" alt="OkiToki logo" draggable="false" oncontextmenu="return false;">
+      OkiToki <span class="dim">/ playtime</span>
+    </div>
+  </div>
+
+  <div class="hero">
+    <h1>Playtime leaderboard</h1>
+    <p>Who's spent the most time on Kepsylon-8 — ranked from most played to least.</p>
+    <div class="cache-note" id="cache-note"></div>
+  </div>
+
+  <div class="card leaderboard-panel">
+    <ul class="leaderboard-list" id="leaderboard-list">
+      <li class="empty-state">Loading playtime data…</li>
+    </ul>
+  </div>
+
+  <footer>
+    <span id="last-checked">Last checked: —</span>
+    <span>OkiToki · Kepsylon Network</span>
+  </footer>
+</div>
+
+<script>
+  // Point this at wherever api.py is actually running (same URL as the uptime page).
+  const API_URL = "https://unobjectional-audrina-uncontortedly.ngrok-free.dev";
+  const CACHE_KEY = "okitoki_playtime_cache";
+  const REFRESH_MS = 60000;
+
+  function fmtHours(h) {
+    if (h === null || h === undefined) return "—";
+    return h < 1 ? `${Math.round(h * 60)}m` : `${h.toFixed(1)}h`;
+  }
+
+  function renderLeaderboard(list) {
+    const el = document.getElementById("leaderboard-list");
+    el.innerHTML = "";
+
+    if (!list || list.length === 0) {
+      el.innerHTML = '<li class="empty-state">No playtime data yet — get out there and play!</li>';
+      return;
+    }
+
+    list.forEach((player, index) => {
+      const rank = index + 1;
+      const li = document.createElement("li");
+      li.className = `leaderboard-row ${rank <= 3 ? 'rank-' + rank : ''}`;
+
+      li.innerHTML = `
+        <div class="leaderboard-left">
+          <span class="leaderboard-rank ${rank <= 3 ? 'rank-' + rank : ''}">${rank}</span>
+          <span class="leaderboard-username">${player.username}</span>
+        </div>
+        <span class="leaderboard-hours">${fmtHours(player.playtime_hours)}</span>
+      `;
+      el.appendChild(li);
+    });
+  }
+
+  function loadCached() {
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        renderLeaderboard(parsed.leaderboard);
+        const cachedAt = new Date(parsed.cachedAt);
+        document.getElementById("cache-note").textContent =
+          `Showing cached data from ${cachedAt.toLocaleString()} — waiting for a live update.`;
+      }
+    } catch (e) { /* ignore malformed cache */ }
+  }
+
+  async function loadPlaytime() {
+    try {
+      const res = await fetch(`${API_URL}/api/status`, {
+        headers: { "ngrok-skip-browser-warning": "true" }
+      });
+      if (!res.ok) throw new Error("bad response");
+      const data = await res.json();
+
+      renderLeaderboard(data.playtime_leaderboard);
+      document.getElementById("cache-note").textContent = "";
+      localStorage.setItem(
+        CACHE_KEY,
+        JSON.stringify({ leaderboard: data.playtime_leaderboard, cachedAt: Date.now() })
+      );
+
+      if (data.last_checked) {
+        const d = new Date(data.last_checked * 1000);
+        document.getElementById("last-checked").textContent = "Last checked: " + d.toLocaleTimeString();
+      }
+    } catch (err) {
+      // The bot's PC being off is expected and frequent — fall back to
+      // whatever was last cached instead of showing an alarming error.
+    }
+  }
+
+  loadCached();
+  loadPlaytime();
+  setInterval(loadPlaytime, REFRESH_MS);
+
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      loadPlaytime();
+    }
+  });
+</script>
+
+</body>
+</html>
